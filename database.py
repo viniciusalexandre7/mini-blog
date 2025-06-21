@@ -67,10 +67,53 @@ def inserir_post(conn, titulo, conteudo, email_usuario):
     except sqlite3.Error as error:
         print(f"Erro ao inserir post: {error}")
 
+def buscar_todos_os_posts(conn):
 
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+        SELECT posts.id, posts.titulo, posts.conteudo, usuarios.nome FROM posts
+        JOIN usuarios ON posts.usuario_id = usuarios.id
+        ;
+        """)
+        posts = cursor.fetchall()
+        return posts
 
+    except sqlite3.Error as error:
+        print(f"Erro ao buscar posts: {error}")
+        return []
 
+def buscar_post_por_id(conn, post_id):
 
+    try: 
+        cursor = conn.cursor() 
+        cursor.execute("""
+        SELECT posts.titulo, posts.conteudo, usuarios.nome
+        FROM posts
+        JOIN usuarios ON posts.usuario_id = usuarios.id
+        WHERE posts.id = ?
+        """,(post_id),) 
+
+        posts = cursor.fetchall() 
+        return posts 
+
+    except sqlite3.Error as error: 
+        print(f"Erro ao buscar posts: {error}") 
+        return []
+        
+def apagar_post(conn, post_id):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+        conn.commit()
+
+        if cursor.rowcount:
+            print(f"Post com ID '{post_id}' deletado com sucesso!")
+        else:
+            print(f"Nenhum post encontrado com o ID '{post_id}'.")
+
+    except sqlite3.Error as e:
+        print(f"Erro ao apagar post {e} ")
 
 if __name__ == "__main__":
 
@@ -81,14 +124,16 @@ if __name__ == "__main__":
         # criar_tabela_posts(conexao)
         # inserir_usuario(conexao, "vinicius", "vini123@gmail.com")
         # inserir_usuario(conexao, "ana", "ana123@gmail.com")
-        inserir_post(conexao, "Dicassad de Treino", "dicasdas", "ana12s3@gmail.com")
+        # inserir_post(conexao, "Dicassad de Treino", "dicasdas", "ana12s3@gmail.com")
         # atualizar_status(conexao, 4, "testando")
-        # deletar_tarefa(conexao, 5)
+        apagar_post(conexao, 3)
 
-        # tarefas = buscar_todas_tarefas(conexao)
-        # print("\nLista de Tarefas:")
-        # for id, descricao, status in tarefas:
-        #     print(f"{id}. {descricao} - Status: {status}")
+        # posts = buscar_post_por_id(conexao, "1")
+        # print("\nLista de Posts:")
+        # for conteudo, titulo, nome in posts:
+        #     print(f"{conteudo} - {titulo} - {nome}")
+        # for id, titulo, conteudo, id_usuario in posts:
+        #     print(f"id_post: {id} - titulo: {titulo} - conteudo: {conteudo} - id_usuario: {id_usuario}")
         
         conexao.close()
         print("Conexão fechada.")
