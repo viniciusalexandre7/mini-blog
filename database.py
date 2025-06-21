@@ -41,9 +41,19 @@ def inserir_usuario(conn, nome, email):
 
     try:
         cursor = conn.cursor()
-        cursor.execute("""INSERT INTO usuarios (nome, email) VALUES (?, ?)""", (nome, email))
-        conn.commit()
-        print(f"Usuario '{nome}' adicionado com sucesso!")
+
+        cursor.execute("SELECT 1 FROM usuarios WHERE email = ?", (email,))
+        usuario_existe = cursor.fetchone()
+
+        if usuario_existe is None:
+            cursor.execute("""INSERT INTO usuarios (nome, email) VALUES (?, ?)""", (nome, email))
+            conn.commit()
+            print(f"Usuario '{nome}' adicionado com sucesso!")
+            return cursor.lastrowid
+
+        else:
+            print("E-mail já cadastrado. Escolha outro.")
+            return None
 
     except sqlite3.Error as error:
         print(f"Erro ao inserir usuario: {error}")
@@ -100,7 +110,100 @@ def buscar_post_por_id(conn, post_id):
     except sqlite3.Error as error: 
         print(f"Erro ao buscar posts: {error}") 
         return []
-        
+
+
+def atualizar_post(conn, post_id, novo_titulo, novo_conteudo):
+
+    try:
+        cursor = conn.cursor()
+
+        if not novo_titulo.strip() or not novo_conteudo.strip():
+            print("Título e conteúdo não podem ser vazios.")
+            return
+
+        cursor.execute("SELECT 1 FROM posts WHERE id = ?", (post_id,))
+        if cursor.fetchone() is None:
+            print(f"Nenhum post encontrado com ID {post_id}.")
+            return
+
+        cursor.execute("""UPDATE posts SET titulo = ?, conteudo = ? WHERE id = ?""", (novo_titulo, novo_conteudo, post_id,))
+
+        conn.commit()
+        print(f"Post com ID {post_id} atualizado com sucesso!")
+
+    except sqlite3.Error as error:
+        print(f"Erro ao atualizar post: {error}")
+
+def listar_todos_os_usuarios(conn):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+        SELECT nome, email From usuarios
+        """)
+        usuarios = cursor.fetchall()
+        return usuarios
+
+    except sqlite3.Error as error:
+        print(f"Erro ao buscar usuarios: {error}")
+        return []
+
+def listar_usuario_por_email(conn, email):
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM usuarios WHERE email = ?", (email,))
+        usuario = cursor.fetchone()
+        return usuario
+
+    except sqlite3.Error as error:
+        print(f"Erro ao buscar usuarios: {error}")
+        return []
+
+def deletar_usuario(conn, email):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM usuarios WHERE email = ?", (email,))
+        resultado = cursor.fetchone()
+
+        if resultado:
+            usuario_id = resultado[0]
+            cursor.execute("DELETE FROM usuarios WHERE id = ?", (usuario_id,))
+            conn.commit()
+
+            if cursor.rowcount:
+                print(f"usuario com deletado com sucesso!")
+            else:
+                print(f"Falha ao deletar o usuário.")
+                
+        else:
+            print(f"Nenhum usuario encontrado com o email: '{email}'.")
+
+    except sqlite3.Error as error:
+        print(f"Erro ao deletar usuario {error} ")
+
+def atualizar_usuario(conn, email_buscado, novo_nome, novo_email):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM usuarios WHERE email = ?", (email_buscado,))
+        resultado = cursor.fetchone()
+
+        if resultado:
+            usuario_id = resultado[0]
+            cursor.execute("UPDATE usuarios SET nome = ?, email = ? WHERE id = ?", (novo_nome, novo_email, usuario_id,))
+            conn.commit()
+
+            if cursor.rowcount:
+                print(f"usuario atualizado com sucesso!")
+            else:
+                print(f"Falha ao atualizar o usuário.")
+        else:
+            print(f"Nenhum usuario encontrado com o email: '{email_buscado}'.")
+
+    except sqlite3.Error as error:
+        print(f"Erro ao atualizar usuario {error} ")
+
+
+
 def apagar_post(conn, post_id):
     try:
         cursor = conn.cursor()
@@ -112,8 +215,8 @@ def apagar_post(conn, post_id):
         else:
             print(f"Nenhum post encontrado com o ID '{post_id}'.")
 
-    except sqlite3.Error as e:
-        print(f"Erro ao apagar post {e} ")
+    except sqlite3.Error as error:
+        print(f"Erro ao apagar post {error} ")
 
 if __name__ == "__main__":
 
