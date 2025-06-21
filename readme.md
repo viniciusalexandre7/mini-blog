@@ -1,0 +1,1 @@
+Este projeto é um pequeno blog construído utilizando Flask, com foco em aplicar os conceitos de programação orientada a objetos e persistência de dados com SQLite. Será possível criar, listar e visualizar postagens de forma simples e intuitiva.
