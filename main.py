@@ -30,10 +30,10 @@ class Blog:
         database.criar_tabela_usuarios(self.conn)
         
     def criar_usuario(self, nome, email):
-        database.inserir_usuario(self.conn, nome, email)
+        return database.inserir_usuario(self.conn, nome, email)
     
     def publicar_post(self, titulo, conteudo, email_usuario):
-        database.inserir_post(self.conn, titulo, conteudo, email_usuario)
+        return database.inserir_post(self.conn, titulo, conteudo, email_usuario)
 
     def listar_todos_os_post(self):
         posts_tuplas = database.buscar_todos_os_posts(self.conn)
@@ -66,10 +66,10 @@ class Blog:
         return lista_de_objetos
 
     def atualizar_post(self, post_id, novo_titulo, novo_conteudo):
-        database.atualizar_post(self.conn, post_id, novo_titulo, novo_conteudo)
+        return database.atualizar_post(self.conn, post_id, novo_titulo, novo_conteudo)
 
     def apagar_post(self, post_id):
-        database.apagar_post(self.conn, post_id)
+        return database.apagar_post(self.conn, post_id)
 
     def listar_todos_os_usuarios(self):
         usuario_tupla = database.listar_todos_os_usuarios(self.conn)
@@ -87,7 +87,6 @@ class Blog:
         if isinstance(usuario_tupla, tuple):
             return Usuario(usuario_id=usuario_tupla[0], nome=usuario_tupla[1], email=usuario_tupla[2])
 
-
         lista_de_usuarios = []
         for tupla in usuario_tupla:
             usuario_obj = Usuario(usuario_id=tupla[0], nome=tupla[1], email=tupla[2])
@@ -96,11 +95,10 @@ class Blog:
         return lista_de_usuarios
 
     def deletar_usuario(self, email):
-        database.deletar_usuario(self.conn, email)
+        return database.deletar_usuario(self.conn, email)
 
     def atualizar_usuario(self, email_buscado, novo_nome, novo_email):
-        database.atualizar_usuario(self.conn, email_buscado, novo_nome, novo_email)
-
+        return database.atualizar_usuario(self.conn, email_buscado, novo_nome, novo_email)
 
     def fechar_conexao(self):
         fechar = self.conn.close()
@@ -108,3 +106,7 @@ class Blog:
 
 
 
+
+
+if __name__ == "__main__":
+    main()
