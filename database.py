@@ -121,6 +121,18 @@ def atualizar_post(conn, post_id, novo_titulo, novo_conteudo):
         print(f"Erro ao atualizar post: {error}")
         return 0
 
+def apagar_post(conn, post_id):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+        conn.commit()
+        return cursor.rowcount  
+
+    except sqlite3.Error as error:
+        print(f"Erro ao apagar post {error} ")
+        return 0
+
+
 def listar_todos_os_usuarios(conn):
     try:
         cursor = conn.cursor()
@@ -182,18 +194,6 @@ def atualizar_usuario(conn, email_buscado, novo_nome, novo_email):
         print(f"Erro ao atualizar usuario {error} ")
         return 0
 
-
-
-def apagar_post(conn, post_id):
-    try:
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
-        conn.commit()
-        return cursor.rowcount  
-
-    except sqlite3.Error as error:
-        print(f"Erro ao apagar post {error} ")
-        return 0
 
 if __name__ == "__main__":
 
