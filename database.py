@@ -90,12 +90,41 @@ def buscar_todos_os_posts(conn):
         print(f"Erro ao buscar posts: {error}")
         return []
 
+
+def listar_post_por_atributo(conn, atributo, valor_busca):
+    
+    try:
+        atributos_permitidos = ["email", "nome", "titulo"]
+
+        if atributo not in atributos_permitidos:
+            return 0
+
+        cursor = conn.cursor()
+
+        if atributo in ['nome', 'email']:
+            campo_tabela = f"usuarios.{atributo}"
+        else:
+            campo_tabela = f"posts.{atributo}"
+    
+        cursor.execute(f"""
+        SELECT posts.id, posts.titulo, posts.conteudo, posts.usuario_id, usuarios.nome
+        FROM posts
+        JOIN usuarios ON posts.usuario_id = usuarios.id
+        WHERE {campo_tabela} = ?
+        """, (valor_busca,))
+        return cursor.fetchall()
+
+    except sqlite3.Error as error:
+        print(f"Erro ao buscar posts: {error}")
+        return []
+
+
 def buscar_post_por_id(conn, post_id):
 
     try: 
         cursor = conn.cursor() 
         cursor.execute("""
-        SELECT posts.id, posts.titulo, posts.conteudo, usuarios.nome 
+        SELECT posts.id, posts.titulo, posts.conteudo, posts.usuario_id, usuarios.nome 
         FROM posts
         JOIN usuarios ON posts.usuario_id = usuarios.id
         WHERE posts.id = ?
