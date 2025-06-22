@@ -64,18 +64,43 @@ class Blog:
             lista_de_objetos.append(post_obj)
         
         return lista_de_objetos
-        
-
-        
 
     def atualizar_post(self, post_id, novo_titulo, novo_conteudo):
         database.atualizar_post(self.conn, post_id, novo_titulo, novo_conteudo)
-        
 
     def apagar_post(self, post_id):
         database.apagar_post(self.conn, post_id)
 
-    #listar post por id do usuario, listar post por email do usuario, listar post por nome do user
+    def listar_todos_os_usuarios(self):
+        usuario_tupla = database.listar_todos_os_usuarios(self.conn)
+        lista_de_usuarios = []
+        for tupla in usuario_tupla:
+            usuario_obj = Usuario(usuario_id=tupla[0], nome=tupla[1], email=tupla[2])
+            lista_de_usuarios.append(usuario_obj)
+        
+        return lista_de_usuarios
+
+    #possiveis atributos: nome, email
+    def listar_usuarios_por_atributo(self, atributo, valor_busca):
+        usuario_tupla = database.listar_usuario_por_atributo(self.conn, atributo, valor_busca)
+
+        if isinstance(usuario_tupla, tuple):
+            return Usuario(usuario_id=usuario_tupla[0], nome=usuario_tupla[1], email=usuario_tupla[2])
+
+
+        lista_de_usuarios = []
+        for tupla in usuario_tupla:
+            usuario_obj = Usuario(usuario_id=tupla[0], nome=tupla[1], email=tupla[2])
+            lista_de_usuarios.append(usuario_obj)
+        
+        return lista_de_usuarios
+
+    def deletar_usuario(self, email):
+        database.deletar_usuario(self.conn, email)
+
+    def atualizar_usuario(self, email_buscado, novo_nome, novo_email):
+        database.atualizar_usuario(self.conn, email_buscado, novo_nome, novo_email)
+
 
     def fechar_conexao(self):
         fechar = self.conn.close()

@@ -161,7 +161,6 @@ def apagar_post(conn, post_id):
         print(f"Erro ao apagar post {error} ")
         return 0
 
-
 def listar_todos_os_usuarios(conn):
     try:
         cursor = conn.cursor()
@@ -175,13 +174,20 @@ def listar_todos_os_usuarios(conn):
         print(f"Erro ao buscar usuarios: {error}")
         return []
 
-def listar_usuario_por_email(conn, email):
-
+def listar_usuario_por_atributo(conn, atributo, valor_busca):
     try:
+        atributos_permitidos = ["email", "nome"]
+
+        if atributo not in atributos_permitidos:
+            return 0
+
         cursor = conn.cursor()
-        cursor.execute("SELECT id FROM usuarios WHERE email = ?", (email,))
-        usuario = cursor.fetchone()
-        return usuario
+
+        cursor.execute(f"""
+        SELECT id, nome, email FROM usuarios WHERE {atributo} = ?
+        """, (valor_busca,))
+
+        return cursor.fetchone() if atributo == "email" else cursor.fetchall()
 
     except sqlite3.Error as error:
         print(f"Erro ao buscar usuarios: {error}")
@@ -202,7 +208,7 @@ def deletar_usuario(conn, email):
             return 0
 
     except sqlite3.Error as error:
-        print(f"Erro ao deletar usuario {error} ")
+        print(f"Erro ao deletar o usuário com e-mail {email}: {error}")
         return 0
 
 def atualizar_usuario(conn, email_buscado, novo_nome, novo_email):
