@@ -36,8 +36,12 @@ class Blog:
     #possiveis atributos, nome, email, titulo
     def listar_post_por_atributo(self, atributo, valor_busca):
         post_tuplas = database.listar_post_por_atributo(self.conn, atributo, valor_busca)
-        lista_de_objetos = []
 
+        if isinstance(post_tuplas, tuple):
+            Post(id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
+
+
+        lista_de_objetos = []
         for tupla in post_tuplas:
             post_obj = Post(id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
             lista_de_objetos.append(post_obj)

@@ -65,7 +65,7 @@ def inserir_post(conn, titulo, conteudo, email_usuario):
             usuario_id = resultado[0]
             cursor.execute("""INSERT INTO posts (titulo, conteudo, usuario_id) VALUES (?, ?, ?)""", (titulo, conteudo, usuario_id))
             conn.commit()
-            return cursor.rowcount  
+            return cursor.lastrowid 
 
         else:
              return 0
