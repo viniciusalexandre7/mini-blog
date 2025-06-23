@@ -239,7 +239,7 @@ if __name__ == "__main__":
         # criar_tabela_posts(conexao)
         # inserir_usuario(conexao, "vinicius", "vini123@gmail.com")
         # inserir_usuario(conexao, "ana", "ana123@gmail.com")
-        print(inserir_post(conexao, "Dicassad de Treino", "dicasdas", "ana123@gmail.com"))
+        # print(inserir_post(conexao, "Dicassad de Treino", "dicasdas", "ana123@gmail.com"))
         # atualizar_status(conexao, 4, "testando")
         # apagar_post(conexao, 3)
 
