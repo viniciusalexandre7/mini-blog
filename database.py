@@ -148,7 +148,7 @@ def atualizar_post(conn, post_id, novo_titulo, novo_conteudo):
 
     except sqlite3.Error as error:
         print(f"Erro ao atualizar post: {error}")
-        return 0
+        return None
 
 def apagar_post(conn, post_id):
     try:
@@ -159,7 +159,7 @@ def apagar_post(conn, post_id):
 
     except sqlite3.Error as error:
         print(f"Erro ao apagar post {error} ")
-        return 0
+        return None
 
 def listar_todos_os_usuarios(conn):
     try:
