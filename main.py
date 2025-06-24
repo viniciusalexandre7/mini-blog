@@ -32,7 +32,6 @@ def gerenciar_listagem_de_todos_os_posts(blog_obj):
     for indice, post in enumerate(lista_de_post, start=1):
         print(f"{indice}. {post.titulo} por {post.nome_autor}")
 
-
 def gerenciar_listagem_de_post_por_id(blog_obj, post_id):
     post = blog_obj.listar_post_por_id(post_id)
 
@@ -43,8 +42,7 @@ def gerenciar_listagem_de_post_por_id(blog_obj, post_id):
     print(f"{post.titulo} por {post.nome_autor}")
     print(f"\nConteúdo:\n{post.conteudo}")
 
-
-def gerenciar_listagem_por_atributo(blog_obj, atributo, valor_busca):
+def gerenciar_listagem_de_post_por_atributo(blog_obj, atributo, valor_busca):
     lista_de_post = blog_obj.listar_post_por_atributo(atributo, valor_busca)
 
     if not lista_de_post:
@@ -104,3 +102,80 @@ def gerenciar_acao_post(blog_obj, post_id):
     except ValueError:
         print("Digite um valor númerico")
         return
+
+def gerenciar_listagem_de_usuarios(blog_obj):
+
+    lista_de_usuarios = blog_obj.listar_todos_os_usuarios()
+
+    if not lista_de_usuarios:
+        print("Não há usuarios para serem listados")
+        return
+   
+    for indice, usuario in enumerate(lista_de_usuarios, start=1):
+        print(f"{indice}. {usuario.nome} - {usuario.email}")
+
+def gerenciar_listagem_de_usuario_por_atributo(blog_obj, atributo, valor_busca):
+    lista_de_usuarios = blog_obj.listar_usuarios_por_atributo(atributo, valor_busca)
+
+    if not lista_de_usuarios:
+        print(f"Não há usuarios com o {atributo}: {valor_busca}.")
+        return 
+
+    for indice, usuario in enumerate(lista_de_usuarios, start=1):
+        print(f"{indice}. {usuario.nome} - {usuario.email}")
+
+
+def gerenciar_acao_usuario(blog_obj, email_usuario):
+
+    usuario = blog_obj.listar_usuarios_por_atributo("email", email_usuario)
+
+    if not usuario:
+        print(f"{email_usuario} não foi encontrado!")
+        return
+
+    print(f"\nUsuario selecionado: '{usuario.nome}' - {usuario.email}\n")
+    print("O que deseja fazer com esse usuario?")
+    print("1. Atualizar")
+    print("2. Apagar")
+    print("3. Cancelar")
+
+    try:
+        escolha = int(input("Digite o número da ação desejada: ").strip())
+        if escolha == 1:
+            novo_nome = input("Novo nome: ").strip()
+            novo_email = input("Novo email: ").strip()
+            resultado = blog_obj.atualizar_usuario(email_usuario, novo_nome, novo_email)
+
+            if resultado is None:
+                print("Erro ao tentar atualizar o usuario.")
+            elif resultado == 0:
+                print("O usuario não foi atualizado.")
+            else:
+                print(f"Usuario com email {email_usuario} atualizado com sucesso!")
+
+        elif escolha == 2:
+            confirmar = input("Tem certeza que deseja apagar este usuario? (s/n): ").strip().lower()
+            if confirmar == "s":
+                resultado = blog_obj.deletar_usuario(email_usuario)
+                if resultado is None:
+                    print("Erro ao tentar apagar o usuario.")
+                elif resultado == 0:
+                    print("O usuario não foi apagado.")
+                else:
+                    print(f"Usuario com o email:{email_usuario} apagado com sucesso!")
+            else:
+                print("Ação de exclusão cancelada.")
+
+        elif escolha == 3:
+            print("Ação cancelada.")
+            return
+
+        else:
+            print("Opção inválida.")
+            return
+
+    except ValueError:
+        print("Digite um valor númerico")
+        return    
+
+

@@ -179,7 +179,7 @@ def listar_usuario_por_atributo(conn, atributo, valor_busca):
         atributos_permitidos = ["email", "nome"]
 
         if atributo not in atributos_permitidos:
-            return 0
+            return None
 
         cursor = conn.cursor()
 
@@ -205,11 +205,11 @@ def deletar_usuario(conn, email):
             conn.commit()
             return cursor.rowcount         
         else:
-            return 0
+            return None
 
     except sqlite3.Error as error:
         print(f"Erro ao deletar o usuário com e-mail {email}: {error}")
-        return 0
+        return None
 
 def atualizar_usuario(conn, email_buscado, novo_nome, novo_email):
     try:
@@ -223,11 +223,11 @@ def atualizar_usuario(conn, email_buscado, novo_nome, novo_email):
             conn.commit()
             return cursor.rowcount  
         else:
-            return 0
+            return None
 
     except sqlite3.Error as error:
         print(f"Erro ao atualizar usuario {error} ")
-        return 0
+        return None
 
 
 if __name__ == "__main__":
