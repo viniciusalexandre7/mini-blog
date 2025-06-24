@@ -19,7 +19,7 @@ class Blog:
         lista_de_objetos = []
 
         for tupla in posts_tuplas:
-            post_obj = Post(id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
+            post_obj = Post(post_id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
             lista_de_objetos.append(post_obj)
         
         return lista_de_objetos
@@ -28,7 +28,7 @@ class Blog:
         tupla = database.buscar_post_por_id(self.conn, post_id)
 
         if tupla is not None:
-                post_obj = Post(id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
+                post_obj = Post(post_id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
                 return post_obj
         else:
             return None
@@ -37,13 +37,16 @@ class Blog:
     def listar_post_por_atributo(self, atributo, valor_busca):
         post_tuplas = database.listar_post_por_atributo(self.conn, atributo, valor_busca)
 
-        if isinstance(post_tuplas, tuple):
-            Post(id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
+        if not post_tuplas:
+            return []
 
+        if isinstance(post_tuplas, tuple):
+           post_obj = Post(post_id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
+           return [post_obj]
 
         lista_de_objetos = []
         for tupla in post_tuplas:
-            post_obj = Post(id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
+            post_obj = Post(post_id=tupla[0], titulo=tupla[1], conteudo=tupla[2], usuario_id=tupla[3], nome_autor=tupla[4])
             lista_de_objetos.append(post_obj)
         
         return lista_de_objetos
@@ -67,8 +70,12 @@ class Blog:
     def listar_usuarios_por_atributo(self, atributo, valor_busca):
         usuario_tupla = database.listar_usuario_por_atributo(self.conn, atributo, valor_busca)
 
+        if not usuario_tupla:
+            return []
+
         if isinstance(usuario_tupla, tuple):
-            return Usuario(usuario_id=usuario_tupla[0], nome=usuario_tupla[1], email=usuario_tupla[2])
+            usuario_obj = Usuario(usuario_id=usuario_tupla[0], nome=usuario_tupla[1], email=usuario_tupla[2])
+            return [usuario_obj]
 
         lista_de_usuarios = []
         for tupla in usuario_tupla:

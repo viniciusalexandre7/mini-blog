@@ -165,7 +165,7 @@ def listar_todos_os_usuarios(conn):
     try:
         cursor = conn.cursor()
         cursor.execute("""
-        SELECT nome, email From usuarios
+        SELECT id, nome, email From usuarios
         """)
         usuarios = cursor.fetchall()
         return usuarios
