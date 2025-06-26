@@ -1,7 +1,7 @@
 import sqlite3
 
 def conectar():
-    conn = sqlite3.connect('blog.db')
+    conn = sqlite3.connect('blog.db', check_same_thread=False)
     return conn
 
 def criar_tabela_usuarios(conn):

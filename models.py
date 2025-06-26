@@ -6,7 +6,7 @@ class Usuario:
 
     def __str__(self):
         return f"Nome: {self.nome} - Email: {self.email}"
-    
+
 class Post:
     def __init__(self, post_id, titulo, conteudo, usuario_id, nome_autor):
         self.post_id = post_id
