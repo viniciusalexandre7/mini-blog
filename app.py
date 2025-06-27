@@ -74,27 +74,48 @@ def criar_post():
         <a href="/">Voltar</a>
     '''
 
-@app.route('/post')
+
+@app.route('/post', methods=['GET', 'POST'])
 def listar_posts_na_web():
     print("✅ Rota /post acessada")
-    posts = blog.listar_todos_os_post()
-    print("🔎 Conteúdo retornado:", posts)
-    
-    posts = blog.listar_todos_os_post()
+
+    if request.method == 'POST':
+        atributo = request.form['atributo']
+        valor = request.form['valor'].strip()
+        posts = blog.listar_post_por_atributo(atributo, valor)
+        print(f"🔍 Buscando por {atributo} = {valor}")
+    else:
+        posts = blog.listar_todos_os_post()
 
     if not posts:
-        return '<h1>Ainda não há posts!</h1>'
+        return '<h1>Ainda não há posts!</h1><a href="/post">Voltar</a>'
 
     html_da_pagina = "<h1>Todos os Posts</h1>"
     html_da_pagina += "<ul>"
 
-    
     for post in posts:
         html_da_pagina += f"<li><a href='/post/{post.post_id}'>{post.titulo}</a> por <strong>{post.nome_autor}</strong></li>"
 
     html_da_pagina += "</ul>"
-    html_da_pagina += "<a href='/'>Voltar para página inicial</a>"
+    html_da_pagina += '''
+        <hr>
+        <h3>Buscar post por atributo</h3>
+        <form method="post">
+            <label for="atributo">Buscar por:</label>
+            <select name="atributo">
+                <option value="titulo">Título</option>
+                <option value="nome">Nome do autor</option>
+                <option value="email">Email do autor</option>
+            </select>
+            <input type="text" name="valor" required>
+            <input type="submit" value="Buscar">
+        </form>
+        <br>
+        <a href="/">Voltar para página inicial</a>
+    '''
+
     return html_da_pagina
+
 
 @app.route('/post/<int:post_id>')
 def detalhes_do_post(post_id):
@@ -109,9 +130,6 @@ def detalhes_do_post(post_id):
         """ 
     else:
         return  "<h1>Post não encontrado</h1>", 404
-
-
-
 
 
 if __name__ == '__main__':
