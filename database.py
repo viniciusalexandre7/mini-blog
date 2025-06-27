@@ -45,7 +45,7 @@ def inserir_usuario(conn, nome, email):
         usuario_existe = cursor.fetchone()
 
         if usuario_existe is None:
-            cursor.execute("""INSERT INTO usuarios (nome, email) VALUES (?, ?)""", (nome, email))
+            cursor.execute("""INSERT INTO usuarios (nome, email) VALUES (?, ?)""", (nome, email,))
             conn.commit()
             return cursor.lastrowid
         else:
@@ -63,7 +63,7 @@ def inserir_post(conn, titulo, conteudo, email_usuario):
 
         if resultado:
             usuario_id = resultado[0]
-            cursor.execute("""INSERT INTO posts (titulo, conteudo, usuario_id) VALUES (?, ?, ?)""", (titulo, conteudo, usuario_id))
+            cursor.execute("""INSERT INTO posts (titulo, conteudo, usuario_id) VALUES (?, ?, ?)""", (titulo, conteudo, usuario_id,))
             conn.commit()
             return cursor.lastrowid 
 
@@ -128,7 +128,7 @@ def buscar_post_por_id(conn, post_id):
         FROM posts
         JOIN usuarios ON posts.usuario_id = usuarios.id
         WHERE posts.id = ?
-        """,(post_id),) 
+        """,(post_id,)) 
 
         posts = cursor.fetchone() 
         return posts 
